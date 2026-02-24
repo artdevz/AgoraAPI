@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.agora.dto.auth.AuthResponseDTO;
 import com.agora.dto.auth.AuthSigninDTO;
 import com.agora.dto.auth.AuthSignupDTO;
 import com.agora.services.AuthService;
@@ -22,12 +23,12 @@ public class AuthController {
     private final AuthService authS;
     
     @PostMapping("/signup")
-    public ResponseEntity<String> Signup(@RequestBody @Valid AuthSignupDTO dto) {
+    public ResponseEntity<AuthResponseDTO> Signup(@RequestBody @Valid AuthSignupDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authS.Signup(dto));
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> Signin(@RequestBody @Valid AuthSigninDTO dto) {
+    public ResponseEntity<AuthResponseDTO> Signin(@RequestBody @Valid AuthSigninDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(authS.Signin(dto));
     }
 

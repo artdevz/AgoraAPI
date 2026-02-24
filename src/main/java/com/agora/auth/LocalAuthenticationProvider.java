@@ -1,7 +1,9 @@
 package com.agora.auth;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.agora.dto.auth.AuthSigninDTO;
 import com.agora.enums.AuthProvider;
@@ -23,9 +25,9 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
     public User Authenticate(Object request) {
         AuthSigninDTO dto = (AuthSigninDTO) request;
 
-        User user = UserMapper.toDomain(userR.findByEmailAndProvider(dto.email(), AuthProvider.LOCAL).get(), false);
+        User user = userR.findByEmailAndProvider(dto.email(), AuthProvider.LOCAL).map(u -> UserMapper.toDomain(u, false)).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
 
-        if (!passwordEncoder.matches(dto.password(), user.GetPassword())) throw new RuntimeException("Invalid Credentials");
+        if (!passwordEncoder.matches(dto.password(), user.GetPassword())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials");
 
         return user;
     }

@@ -1,5 +1,5 @@
 package com.agora.dto.auth;
 
-public record AuthTokenResponseDTO(
+public record AuthResponseDTO(
     String token
 ) {}
