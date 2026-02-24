@@ -23,7 +23,7 @@ public class AuthController {
     
     @PostMapping("/signup")
     public ResponseEntity<String> Signup(@RequestBody @Valid AuthSignupDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body("Criado conta");
+        return ResponseEntity.status(HttpStatus.CREATED).body(authS.Signup(dto));
     }
 
     @PostMapping("/signin")

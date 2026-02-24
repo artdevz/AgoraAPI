@@ -22,7 +22,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/**").permitAll() // Temporário enquanto é desenvolvido
                 .anyRequest().authenticated()
             );
             // .oauth2Login(oauth -> oauth

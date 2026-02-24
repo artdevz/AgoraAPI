@@ -38,6 +38,7 @@ public class User {
         SetEmail(email);
         SetPassword(password);
         SetCreatedAt(createdAt);
+        SetProvider(provider);
     }
 
     public UUID GetID() { return id; }
@@ -45,7 +46,9 @@ public class User {
     public String GetEmail() { return email; }
     public String GetPassword() { return password; }
     public LocalDate GetCreatedAt() { return createdAt; }
+
     public AuthProvider GetProvider() { return provider; }
+    public String GetProviderID() { return providerID; }
 
     public List<Post> GetPosts() { return posts; }
 
@@ -67,9 +70,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public void SetProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
     public void SetProviderID(String googleID) {
-        if (AuthProvider.GOOGLE != this.GetProvider()) return;
-        System.out.println("Setando providerID");
+        if (AuthProvider.GOOGLE != this.GetProvider()) throw new IllegalStateException("Apenas usuários GOOGLE podem ter providerID");
         this.providerID = googleID;
     }
 

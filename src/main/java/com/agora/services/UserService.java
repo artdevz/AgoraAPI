@@ -1,10 +1,13 @@
 package com.agora.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.agora.dto.user.UserCreateDTO;
+import com.agora.dto.user.UserResponseDTO;
 import com.agora.mappers.UserMapper;
 import com.agora.models.User;
 import com.agora.repositories.UserRepository;
@@ -16,21 +19,22 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userR;
-    
-    public String Create(UserCreateDTO dto) {
+    private final PasswordEncoder passwordEncoder;
+
+    public User Create(UserCreateDTO dto) {
         User user = new User(
             null, // ID
             dto.username(),
             dto.email(),
-            dto.password(),
+            passwordEncoder.encode(dto.password()),
             LocalDate.now(),
             dto.provider()
         );
-        return "User criado: " + userR.save(UserMapper.toEntity(user)).getId();
+        return UserMapper.toDomain(userR.save(UserMapper.toEntity(user)), false);
     }
 
-    public String ReadAll() {
-        return "";
+    public List<UserResponseDTO> ReadAll() {
+        return userR.findAll().stream().map(UserMapper::ToResponseDTO).toList();
     }
 
 }

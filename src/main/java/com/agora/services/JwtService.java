@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.agora.models.User;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component

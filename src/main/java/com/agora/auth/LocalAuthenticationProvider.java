@@ -25,7 +25,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
 
         User user = UserMapper.toDomain(userR.findByEmailAndProvider(dto.email(), AuthProvider.LOCAL).get(), false);
 
-        if (!passwordEncoder.matches(dto.password(), user.GetPassword())) throw new RuntimeException("Invalid Password");
+        if (!passwordEncoder.matches(dto.password(), user.GetPassword())) throw new RuntimeException("Invalid Credentials");
 
         return user;
     }
