@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.agora.enums.AuthProvider;
+
 public class User {
 
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
@@ -17,6 +19,9 @@ public class User {
     private String password;
     private LocalDate createdAt;
 
+    private AuthProvider provider;
+    private String providerID; // Via Google
+
     private List<Post> posts = new ArrayList<>();
 
     public User() {}
@@ -25,7 +30,8 @@ public class User {
         String username,
         String email,
         String password,
-        LocalDate createdAt
+        LocalDate createdAt,
+        AuthProvider provider
     ) {
         this.id = id;
         SetUsername(username);
@@ -39,6 +45,7 @@ public class User {
     public String GetEmail() { return email; }
     public String GetPassword() { return password; }
     public LocalDate GetCreatedAt() { return createdAt; }
+    public AuthProvider GetProvider() { return provider; }
 
     public List<Post> GetPosts() { return posts; }
 
@@ -58,6 +65,12 @@ public class User {
 
     public void SetCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void SetProviderID(String googleID) {
+        if (AuthProvider.GOOGLE != this.GetProvider()) return;
+        System.out.println("Setando providerID");
+        this.providerID = googleID;
     }
 
     private void ValidateEmail(String email) { if (!(email.matches(EMAIL_REGEX))) throw new IllegalArgumentException("Formato de Email inválido"); }

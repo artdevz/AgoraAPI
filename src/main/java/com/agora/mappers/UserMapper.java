@@ -12,7 +12,8 @@ public class UserMapper {
             entity.getUsername(),
             entity.getEmail(),
             entity.getPassword(),
-            entity.getCreatedAt()
+            entity.getCreatedAt(),
+            entity.getProvider()
         );
 
         if (details) {
@@ -30,6 +31,7 @@ public class UserMapper {
         entity.setEmail(user.GetEmail());
         entity.setPassword(user.GetPassword());
         entity.setCreatedAt(user.GetCreatedAt());
+        entity.setProvider(user.GetProvider());
 
         return entity;
     }

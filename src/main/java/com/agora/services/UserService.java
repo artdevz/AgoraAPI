@@ -23,7 +23,8 @@ public class UserService {
             dto.username(),
             dto.email(),
             dto.password(),
-            LocalDate.now()
+            LocalDate.now(),
+            dto.provider()
         );
         return "User criado: " + userR.save(UserMapper.toEntity(user)).getId();
     }
