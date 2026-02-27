@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record UserResponseDTO(
     UUID id,
-    String username,
+    String nickname,
     String email,
     LocalDate createdAt
 ) {}

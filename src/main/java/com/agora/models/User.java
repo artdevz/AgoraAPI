@@ -14,7 +14,7 @@ public class User {
     private static final int MAXIMUM_NAME_LENGTH = 32;
     
     private UUID id;
-    private String username;
+    private String nickname;
     private String email;
     private String password;
     private LocalDate createdAt;
@@ -27,14 +27,14 @@ public class User {
     public User() {}
     public User(
         UUID id,
-        String username,
+        String nickname,
         String email,
         String password,
         LocalDate createdAt,
         AuthProvider provider
     ) {
         this.id = id;
-        SetUsername(username);
+        SetNickname(nickname);
         SetEmail(email);
         SetPassword(password);
         SetCreatedAt(createdAt);
@@ -42,7 +42,7 @@ public class User {
     }
 
     public UUID GetID() { return id; }
-    public String GetUsername() { return username; }
+    public String GetNickname() { return nickname; }
     public String GetEmail() { return email; }
     public String GetPassword() { return password; }
     public LocalDate GetCreatedAt() { return createdAt; }
@@ -52,9 +52,9 @@ public class User {
 
     public List<Post> GetPosts() { return posts; }
 
-    public void SetUsername(String username) {
-        if (username.length() < MINIMUM_NAME_LENGTH || username.length() > MAXIMUM_NAME_LENGTH) throw new IllegalArgumentException("Username deve ter entre " + MINIMUM_NAME_LENGTH + " e " + MAXIMUM_NAME_LENGTH + " caracteres");
-        this.username = username;
+    public void SetNickname(String nickname) {
+        if (nickname.length() < MINIMUM_NAME_LENGTH || nickname.length() > MAXIMUM_NAME_LENGTH) throw new IllegalArgumentException("Nickname deve ter entre " + MINIMUM_NAME_LENGTH + " e " + MAXIMUM_NAME_LENGTH + " caracteres");
+        this.nickname = nickname;
     }
 
     public void SetEmail(String email) {

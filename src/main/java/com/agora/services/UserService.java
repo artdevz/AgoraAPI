@@ -24,7 +24,7 @@ public class UserService {
     public User Create(UserCreateDTO dto) {
         User user = new User(
             null, // ID
-            dto.username(),
+            dto.nickname(),
             dto.email(),
             passwordEncoder.encode(dto.password()),
             LocalDate.now(),

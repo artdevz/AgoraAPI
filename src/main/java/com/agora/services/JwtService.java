@@ -24,6 +24,7 @@ public class JwtService {
         return Jwts.builder()
             .subject(user.GetID().toString())
             .claim("email", user.GetEmail())
+            .claim("nickname", user.GetNickname())
             .claim("provider", user.GetProvider().name())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + expiration))

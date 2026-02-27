@@ -11,7 +11,7 @@ public class UserMapper {
 
         User user = new User(
             entity.getId(),
-            entity.getUsername(),
+            entity.getNickname(),
             entity.getEmail(),
             entity.getPassword(),
             entity.getCreatedAt(),
@@ -30,7 +30,7 @@ public class UserMapper {
 
         return new UserResponseDTO(
             entity.getId(),
-            entity.getUsername(),
+            entity.getNickname(),
             entity.getEmail(),
             entity.getCreatedAt()
         );
@@ -41,7 +41,7 @@ public class UserMapper {
         
         UserEntity entity = new UserEntity();
         entity.setId(user.GetID());
-        entity.setUsername(user.GetUsername());
+        entity.setNickname(user.GetNickname());
         entity.setEmail(user.GetEmail());
         entity.setPassword(user.GetPassword());
         entity.setCreatedAt(user.GetCreatedAt());

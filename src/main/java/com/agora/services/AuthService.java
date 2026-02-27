@@ -22,7 +22,7 @@ public class AuthService {
     
     public AuthResponseDTO Signup(AuthSignupDTO dto) {
         User user = userS.Create(new UserCreateDTO(
-            dto.username(),
+            dto.nickname(),
             dto.email(),
             dto.password(),
             AuthProvider.LOCAL

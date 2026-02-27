@@ -33,7 +33,7 @@ public class UserEntity {
     private UUID id;
 
     @Column(unique = true)
-    private String username;
+    private String nickname;
 
     @Column(unique = true)
     private String email;
