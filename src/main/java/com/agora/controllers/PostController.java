@@ -10,29 +10,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.agora.dto.topic.TopicCreateDTO;
-import com.agora.dto.topic.TopicResponseDTO;
-import com.agora.services.TopicService;
+import com.agora.dto.post.PostCreateDTO;
+import com.agora.dto.post.PostResponseDTO;
+import com.agora.services.PostService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/topic")
-public class TopicController {
+@RequestMapping("/post")
+public class PostController {
     
-    private final TopicService topicS;
+    private final PostService postS;
 
     @PostMapping
-    public ResponseEntity<String> Create(@RequestBody @Valid TopicCreateDTO dto) {
-        System.out.println("Creating topic with title: " + dto.title());
-        return ResponseEntity.status(HttpStatus.CREATED).body(topicS.Create(dto).GetID().toString());
+    public ResponseEntity<String> Create(@RequestBody @Valid PostCreateDTO dto) {
+        System.out.println("Creating post with title: " + dto.title());
+        return ResponseEntity.status(HttpStatus.CREATED).body(postS.Create(dto).GetID().toString());
     }
 
     @GetMapping
-    public ResponseEntity<List<TopicResponseDTO>> ReadAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(topicS.ReadAll());
+    public ResponseEntity<List<PostResponseDTO>> ReadAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(postS.ReadAll());
     }
 
 }

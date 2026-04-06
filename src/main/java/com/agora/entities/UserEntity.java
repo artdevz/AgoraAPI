@@ -50,6 +50,6 @@ public class UserEntity {
     private String providerID;
 
     @OneToMany(mappedBy = "user")
-    private List<PostEntity> posts;
+    private List<CommentEntity> comments;
 
 }

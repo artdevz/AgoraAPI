@@ -25,9 +25,9 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     @Query("""
             SELECT u FROM User u
-            LEFT JOIN FETCH u.posts
+            LEFT JOIN FETCH u.comments
             WHERE u.id = :id            
         """)
-    Optional<UserEntity> findByIdWithPosts(UUID id);
+    Optional<UserEntity> findByIdWithComments(UUID id);
 
 }

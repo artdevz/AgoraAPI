@@ -1,9 +1,9 @@
-package com.agora.dto.topic;
+package com.agora.dto.post;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record TopicResponseDTO(
+public record PostResponseDTO(
     UUID id,
     String title,
     String description,

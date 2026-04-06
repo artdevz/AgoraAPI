@@ -1,14 +1,14 @@
 package com.agora.entities;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,21 +19,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Topic")
-@Table(name = "topics")
-public class TopicEntity {
+@Entity(name = "Comment")
+@Table(name = "comments")
+public class CommentEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private PostEntity post;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-    private String description;
+    private LocalDate time;
 
-    private LocalDate createdAt;
-
-    @OneToMany(mappedBy = "topic")
-    private List<PostEntity> posts;
+    private String content;
 
 }

@@ -22,7 +22,7 @@ public class User {
     private AuthProvider provider;
     private String providerID; // Via Google
 
-    private List<Post> posts = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public User() {}
     public User(
@@ -50,7 +50,7 @@ public class User {
     public AuthProvider GetProvider() { return provider; }
     public String GetProviderID() { return providerID; }
 
-    public List<Post> GetPosts() { return posts; }
+    public List<Comment> GetComments() { return comments; }
 
     public void SetNickname(String nickname) {
         if (nickname.length() < MINIMUM_NAME_LENGTH || nickname.length() > MAXIMUM_NAME_LENGTH) throw new IllegalArgumentException("Nickname deve ter entre " + MINIMUM_NAME_LENGTH + " e " + MAXIMUM_NAME_LENGTH + " caracteres");

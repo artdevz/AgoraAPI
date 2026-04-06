@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.agora.entities.TopicEntity;
+import com.agora.entities.CommentEntity;
 
-public interface TopicRepository extends JpaRepository<TopicEntity, UUID> {
+public interface CommentRepository extends JpaRepository<CommentEntity, UUID> {
     
 }
