@@ -2,6 +2,7 @@ package com.agora.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,10 @@ public class PostService {
 
     public List<PostResponseDTO> ReadAll() {
         return postR.findAll().stream().map(PostMapper::ToResponseDTO).toList();
+    }
+
+    public Post ReadByID(UUID id) {
+        return PostMapper.toDomain(postR.findById(id).orElseThrow(() -> new IllegalArgumentException("Post não encontrado")), true);
     }
 
 }

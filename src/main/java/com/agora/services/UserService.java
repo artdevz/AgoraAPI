@@ -2,6 +2,7 @@ package com.agora.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,10 @@ public class UserService {
 
     public List<UserResponseDTO> ReadAll() {
         return userR.findAll().stream().map(UserMapper::ToResponseDTO).toList();
+    }
+
+    public User ReadByID(UUID id) {
+        return UserMapper.toDomain(userR.findById(id).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true);
     }
 
 }

@@ -35,7 +35,7 @@ public class CommentEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    private LocalDate time;
+    private LocalDate createdAt;
 
     private String content;
 
