@@ -31,7 +31,7 @@ public class Topic {
         SetCreatedAt(createdAt);
     }
 
-    public UUID GetId() { return id; }
+    public UUID GetID() { return id; }
     public String GetTitle() { return title; }
     public String GetDescription() { return description; }
     public LocalDate GetCreatedAt() { return createdAt; }
