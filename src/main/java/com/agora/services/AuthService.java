@@ -9,6 +9,8 @@ import com.agora.dto.auth.AuthSignupDTO;
 import com.agora.dto.user.UserCreateDTO;
 import com.agora.enums.AuthProvider;
 import com.agora.models.User;
+import com.agora.security.CustomUserDetails;
+import com.agora.security.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserService userS;
-    private final JwtService jwtS;
+    private final JwtProvider jwtProvider;
     private final LocalAuthenticationProvider localProvider;
     
     public AuthResponseDTO Signup(AuthSignupDTO dto) {
@@ -28,12 +30,27 @@ public class AuthService {
             AuthProvider.LOCAL
         ));
 
-        return new AuthResponseDTO(jwtS.GenerateAccessToken(user));
+        CustomUserDetails userDetails = new CustomUserDetails(
+            user.GetEmail(),
+            user.GetPassword(),
+            user.GetID(),
+            user.GetNickname()
+        );
+
+        return new AuthResponseDTO(jwtProvider.GenerateToken(userDetails));
     }
 
     public AuthResponseDTO Signin(AuthSigninDTO dto) {
         User user = localProvider.Authenticate(dto);
-        return new AuthResponseDTO(jwtS.GenerateAccessToken(user));
+
+        CustomUserDetails userDetails = new CustomUserDetails(
+            user.GetEmail(),
+            user.GetPassword(),
+            user.GetID(),
+            user.GetNickname()
+        );
+
+        return new AuthResponseDTO(jwtProvider.GenerateToken(userDetails));
     }
 
 }

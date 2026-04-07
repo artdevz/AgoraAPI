@@ -12,6 +12,7 @@ public class Comment {
     private User user;
     private LocalDate createdAt;
     private String content;
+    private boolean edited;
 
     private Comment parent;
 
@@ -22,13 +23,19 @@ public class Comment {
         User user,
         LocalDate createdAt,
         String content,
+        boolean edited,
         Comment parent
     ) {
+        if (post == null) throw new IllegalArgumentException("Post não pode ser nulo");
+        if (user == null) throw new IllegalArgumentException("User não pode ser nulo");
+        if (content == null) throw new IllegalArgumentException("Content não pode ser nulo");
+
         this.id = id;
         SetPost(post);
         SetUser(user);
         SetCreatedAt(createdAt);
         SetContent(content);
+        SetEdited(edited);
         SetParent(parent);
     }
 
@@ -37,6 +44,7 @@ public class Comment {
     public User GetUser() { return user; }
     public LocalDate GetCreatedAt() { return createdAt; }
     public String GetContent() { return content; }
+    public boolean IsEdited() { return edited; }
     public Comment GetParent() { return parent; }
 
     public void SetPost(Post post) {
@@ -56,16 +64,20 @@ public class Comment {
         this.content = content;
     }
 
+    public void SetEdited(boolean edited) {
+        this.edited = edited;
+    }
+
     public void SetParent(Comment parent) {
-        if (parent != null && parent.GetParent() != null) {
-            throw new IllegalArgumentException("Não é permitido criar um comentário com mais de um nível de resposta");
-        }
-        if (parent != null && !parent.GetPost().GetID().equals(this.post.GetID())) {
-            throw new IllegalArgumentException("O comentário pai deve pertencer ao mesmo post do comentário filho");
-        }
-        if (parent != null && parent.GetID().equals(this.id)) {
-            throw new IllegalArgumentException("Um comentário não pode ser pai de si mesmo");
-        }
+        // if (parent != null && parent.GetParent() != null) {
+        //     throw new IllegalArgumentException("Não é permitido criar um comentário com mais de um nível de resposta");
+        // }
+        // if (parent != null && !parent.GetPost().GetID().equals(this.post.GetID())) {
+        //     throw new IllegalArgumentException("O comentário pai deve pertencer ao mesmo post do comentário filho");
+        // }
+        // if (parent != null && parent.GetID().equals(this.id)) {
+        //     throw new IllegalArgumentException("Um comentário não pode ser pai de si mesmo");
+        // }
         this.parent = parent;
     }
     

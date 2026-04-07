@@ -42,4 +42,8 @@ public class UserService {
         return UserMapper.toDomain(userR.findById(id).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true);
     }
 
+    public User ReadByEmail(String email) {
+        return UserMapper.toDomain(userR.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true);
+    }
+
 }

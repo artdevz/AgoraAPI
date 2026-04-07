@@ -1,5 +1,6 @@
 package com.agora.mappers;
 
+import com.agora.dto.comment.CommentResponseDTO;
 import com.agora.entities.CommentEntity;
 import com.agora.models.Comment;
 
@@ -10,10 +11,11 @@ public class CommentMapper {
 
         Comment comment = new Comment(
             entity.getId(),
-            null, // Post
-            null, // User
+            PostMapper.toDomain(entity.getPost(), false),
+            UserMapper.toDomain(entity.getUser(), false),
             entity.getCreatedAt(),
             entity.getContent(),
+            entity.isEdited(),
             null  // Parent
         );
 
@@ -29,9 +31,24 @@ public class CommentMapper {
         entity.setUser(UserMapper.toEntity(comment.GetUser()));
         entity.setCreatedAt(comment.GetCreatedAt());
         entity.setContent(comment.GetContent());
+        entity.setEdited(comment.IsEdited());
         // Parent
 
         return entity;
+    }
+
+    public static CommentResponseDTO toResponseDTO(Comment comment) {
+        if (comment == null) return null;
+
+        return new CommentResponseDTO(
+            comment.GetID(),
+            comment.GetPost().GetID(),
+            comment.GetUser().GetID(),
+            comment.GetCreatedAt(),
+            comment.GetContent(),
+            comment.IsEdited()
+            // comment.GetParent() != null ? comment.GetParent().GetID() : null
+        );
     }
 
 }

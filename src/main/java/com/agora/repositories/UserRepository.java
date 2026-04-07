@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         AuthProvider provider
     );
 
+    Optional<UserEntity> findById(UUID id);
+    
     Optional<UserEntity> findByEmail(String email);
 
     @Query("""

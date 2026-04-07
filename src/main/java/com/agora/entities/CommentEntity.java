@@ -39,4 +39,6 @@ public class CommentEntity {
 
     private String content;
 
+    private boolean edited;
+
 }
