@@ -9,5 +9,6 @@ public record CommentResponseDTO(
     UUID userID,
     LocalDate createdAt,
     String content,
-    boolean edited
+    boolean edited,
+    UUID parentID
 ) {}

@@ -26,8 +26,12 @@ public class CommentService {
 
     public Comment Create(CommentCreateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("AuthName: " + auth.getName());
         User user = userS.ReadByEmail(auth.getName());
+
+        Comment parent = null;
+        if (dto.parentID() != null) {
+            parent = CommentMapper.toDomain(commentR.findById(dto.parentID()).orElseThrow(() -> new RuntimeException("Parent comment not found")));
+        }
 
         Comment comment = new Comment(
             null, // ID
@@ -36,7 +40,7 @@ public class CommentService {
             LocalDate.now(), 
             dto.content(),
             false, // Edited
-            null  // Parent
+            parent
         );
         return CommentMapper.toDomain(commentR.save(CommentMapper.toEntity(comment)));
     }

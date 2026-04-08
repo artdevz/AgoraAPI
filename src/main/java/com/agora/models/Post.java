@@ -12,6 +12,7 @@ public class Post {
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 256;
     
     private UUID id;
+    private User authorID;
     private String title;
     private String description;
     private LocalDate createdAt;
@@ -21,22 +22,29 @@ public class Post {
     public Post() {}
     public Post(
         UUID id,
+        User authorID,
         String title,
         String description,
         LocalDate createdAt
     ) {
         this.id = id;
+        this.authorID = authorID;
         SetTitle(title);
         SetDescription(description);
         SetCreatedAt(createdAt);
     }
 
     public UUID GetID() { return id; }
+    public User GetAuthorID() { return authorID; }
     public String GetTitle() { return title; }
     public String GetDescription() { return description; }
     public LocalDate GetCreatedAt() { return createdAt; }
 
     public List<Comment> GetComments() { return comments; }
+
+    public void SetAuthorID(User authorID) {
+        this.authorID = authorID;
+    }
 
     public void SetTitle(String title) {
         if (title.length() < MINIMUM_TITLE_LENGTH || title.length() > MAXIMUM_TITLE_LENGTH) throw new IllegalArgumentException("Title deve ter entre " + MINIMUM_TITLE_LENGTH + " e " + MAXIMUM_TITLE_LENGTH + " caracteres");

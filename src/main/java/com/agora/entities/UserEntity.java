@@ -49,6 +49,9 @@ public class UserEntity {
     @Column
     private String providerID;
 
+    @OneToMany(mappedBy = "author")
+    private List<PostEntity> posts;
+
     @OneToMany(mappedBy = "user")
     private List<CommentEntity> comments;
 

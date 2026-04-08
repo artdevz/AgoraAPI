@@ -41,4 +41,8 @@ public class CommentEntity {
 
     private boolean edited;
 
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private CommentEntity parent;
+
 }

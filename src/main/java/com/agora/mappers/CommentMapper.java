@@ -16,7 +16,7 @@ public class CommentMapper {
             entity.getCreatedAt(),
             entity.getContent(),
             entity.isEdited(),
-            null  // Parent
+            entity.getParent() != null ? toDomain(entity.getParent()) : null
         );
 
         return comment;
@@ -32,7 +32,7 @@ public class CommentMapper {
         entity.setCreatedAt(comment.GetCreatedAt());
         entity.setContent(comment.GetContent());
         entity.setEdited(comment.IsEdited());
-        // Parent
+        entity.setParent(comment.GetParent() != null ? toEntity(comment.GetParent()) : null);
 
         return entity;
     }
@@ -46,8 +46,8 @@ public class CommentMapper {
             comment.GetUser().GetID(),
             comment.GetCreatedAt(),
             comment.GetContent(),
-            comment.IsEdited()
-            // comment.GetParent() != null ? comment.GetParent().GetID() : null
+            comment.IsEdited(),
+            comment.GetParent() != null ? comment.GetParent().GetID() : null
         );
     }
 
