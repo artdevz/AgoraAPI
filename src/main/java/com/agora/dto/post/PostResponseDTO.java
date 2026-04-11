@@ -1,6 +1,6 @@
 package com.agora.dto.post;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.agora.dto.user.UserSummaryDTO;
@@ -10,5 +10,5 @@ public record PostResponseDTO(
     UserSummaryDTO author,
     String title,
     String description,
-    LocalDate createdAt
+    OffsetDateTime createdAt
 ) {}

@@ -1,6 +1,6 @@
 package com.agora.services;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +32,7 @@ public class PostService {
             user,
             dto.title(),
             dto.description(),
-            LocalDate.now()
+            OffsetDateTime.now()
         );
         return PostMapper.toDomain(postR.save(PostMapper.toEntity(post)), false);
     }

@@ -1,6 +1,6 @@
 package com.agora.models;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class Comment {
@@ -9,10 +9,11 @@ public class Comment {
 
     private UUID id;
     private Post post;
-    private User user;
-    private LocalDate createdAt;
+    private User author;
+    private OffsetDateTime createdAt;
     private String content;
     private boolean edited;
+    private boolean deleted;
 
     private Comment parent;
 
@@ -20,42 +21,45 @@ public class Comment {
     public Comment(
         UUID id,
         Post post,
-        User user,
-        LocalDate createdAt,
+        User author,
+        OffsetDateTime createdAt,
         String content,
         boolean edited,
+        boolean deleted,
         Comment parent
     ) {
         if (post == null) throw new IllegalArgumentException("Post não pode ser nulo");
-        if (user == null) throw new IllegalArgumentException("User não pode ser nulo");
+        if (author == null) throw new IllegalArgumentException("Author não pode ser nulo");
         if (content == null) throw new IllegalArgumentException("Content não pode ser nulo");
 
         this.id = id;
         SetPost(post);
-        SetUser(user);
+        SetAuthor(author);
         SetCreatedAt(createdAt);
         SetContent(content);
         SetEdited(edited);
+        SetDeleted(deleted);
         SetParent(parent);
     }
 
     public UUID GetID() { return id; }
     public Post GetPost() { return post; }
-    public User GetUser() { return user; }
-    public LocalDate GetCreatedAt() { return createdAt; }
+    public User GetAuthor() { return author; }
+    public OffsetDateTime GetCreatedAt() { return createdAt; }
     public String GetContent() { return content; }
     public boolean IsEdited() { return edited; }
+    public boolean isDeleted() { return deleted; }
     public Comment GetParent() { return parent; }
 
     public void SetPost(Post post) {
         this.post = post;
     }
 
-    public void SetUser(User user) {
-        this.user = user;
+    public void SetAuthor(User author) {
+        this.author = author;
     }
 
-    public void SetCreatedAt(LocalDate createdAt) {
+    public void SetCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -66,6 +70,10 @@ public class Comment {
 
     public void SetEdited(boolean edited) {
         this.edited = edited;
+    }
+
+    public void SetDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void SetParent(Comment parent) {

@@ -1,6 +1,6 @@
 package com.agora.entities;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -32,14 +32,16 @@ public class CommentEntity {
     private PostEntity post;
     
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @JoinColumn(name = "author")
+    private UserEntity author;
 
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
 
     private String content;
 
     private boolean edited;
+
+    private boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

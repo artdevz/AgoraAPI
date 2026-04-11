@@ -1,6 +1,6 @@
 package com.agora.models;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class Post {
     private User authorID;
     private String title;
     private String description;
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
 
     private List<Comment> comments = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class Post {
         User authorID,
         String title,
         String description,
-        LocalDate createdAt
+        OffsetDateTime createdAt
     ) {
         this.id = id;
         this.authorID = authorID;
@@ -38,7 +38,7 @@ public class Post {
     public User GetAuthorID() { return authorID; }
     public String GetTitle() { return title; }
     public String GetDescription() { return description; }
-    public LocalDate GetCreatedAt() { return createdAt; }
+    public OffsetDateTime GetCreatedAt() { return createdAt; }
 
     public List<Comment> GetComments() { return comments; }
 
@@ -56,7 +56,7 @@ public class Post {
         this.description = description;
     }
 
-    public void SetCreatedAt(LocalDate createdAt) {
+    public void SetCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

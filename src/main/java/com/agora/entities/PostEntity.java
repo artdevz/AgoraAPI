@@ -1,6 +1,6 @@
 package com.agora.entities;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ public class PostEntity {
 
     private String description;
 
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
 
     @OneToMany(mappedBy = "post")
     private List<CommentEntity> comments;

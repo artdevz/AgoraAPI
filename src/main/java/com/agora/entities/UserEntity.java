@@ -52,7 +52,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "author")
     private List<PostEntity> posts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<CommentEntity> comments;
 
 }
