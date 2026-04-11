@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agora.dto.user.UserCreateDTO;
 import com.agora.dto.user.UserResponseDTO;
+import com.agora.mappers.UserMapper;
 import com.agora.services.UserService;
 
 import jakarta.validation.Valid;
@@ -32,6 +34,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> ReadAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userS.ReadAll());
+    }
+
+    @GetMapping("/{nickname}")
+    public ResponseEntity<UserResponseDTO> ReadByNickname(@PathVariable String nickname) {
+        return ResponseEntity.status(HttpStatus.OK).body(UserMapper.ToResponseDTO(UserMapper.toEntity(userS.ReadByNickname(nickname))));
     }
 
 }

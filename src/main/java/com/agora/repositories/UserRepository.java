@@ -25,6 +25,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     
     Optional<UserEntity> findByEmail(String email);
 
+    Optional<UserEntity> findByNickname(String nickname);
+
     @Query("""
             SELECT u FROM User u
             LEFT JOIN FETCH u.comments
