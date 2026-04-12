@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.agora.dto.user.UserCreateDTO;
-import com.agora.dto.user.UserResponseDTO;
 import com.agora.mappers.UserMapper;
 import com.agora.models.User;
 import com.agora.repositories.UserRepository;
@@ -19,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService {
 
-    private final UserRepository userR;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User Create(UserCreateDTO dto) {
@@ -31,27 +30,27 @@ public class UserService {
             LocalDate.now(),
             dto.provider()
         );
-        return UserMapper.toDomain(userR.save(UserMapper.toEntity(user)), false);
+        return UserMapper.ToDomain(userRepository.save(UserMapper.ToEntity(user)));
     }
 
-    public List<UserResponseDTO> ReadAll() {
-        return userR.findAll().stream().map(UserMapper::ToResponseDTO).toList();
+    public List<User> ReadAll() {
+        return userRepository.findAll().stream().map(UserMapper::ToDomain).toList();
     }
 
     public User ReadByID(UUID id) {
-        return UserMapper.toDomain(userR.findById(id).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true);
+        return UserMapper.ToDomain(userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User não encontrado")));
     }
 
     public User ReadByEmail(String email) {
-        return UserMapper.toDomain(userR.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true);
+        return UserMapper.ToDomain(userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User não encontrado")));
     }
 
     public User ReadByNickname(String nickname) {
-        return UserMapper.toDomain(
-            userR.findById(
-                userR.findByNickname(
+        return UserMapper.ToDomain(
+            userRepository.findById(
+                userRepository.findByNickname(
                     nickname).orElseThrow(() -> new IllegalArgumentException("User não encontrado")).getId()
-                ).orElseThrow(() -> new IllegalArgumentException("User não encontrado")), true
+                ).orElseThrow(() -> new IllegalArgumentException("User não encontrado"))
             );
     }
 

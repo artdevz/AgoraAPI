@@ -18,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class AuthService {
 
-    private final UserService userS;
+    private final UserService userService;
     private final JwtProvider jwtProvider;
     private final LocalAuthenticationProvider localProvider;
     
     public AuthResponseDTO Signup(AuthSignupDTO dto) {
-        User user = userS.Create(new UserCreateDTO(
+        User user = userService.Create(new UserCreateDTO(
             dto.nickname(),
             dto.email(),
             dto.password(),

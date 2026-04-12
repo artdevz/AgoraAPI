@@ -13,4 +13,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, UUID> {
     @Query("SELECT c FROM Comment c WHERE c.post.id = :postID")
     List<CommentEntity> findByPostID(UUID postID);
 
+    @Query("SELECT c FROM Comment c WHERE c.author.nickname = :nickname")
+    List<CommentEntity> findAllByAuthorNickname(String nickname);
+
 }

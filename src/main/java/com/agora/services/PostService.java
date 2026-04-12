@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.agora.dto.post.PostCreateDTO;
-import com.agora.dto.post.PostResponseDTO;
 import com.agora.mappers.PostMapper;
 import com.agora.models.Post;
 import com.agora.models.User;
@@ -21,12 +20,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PostService {
     
-    private final PostRepository postR;
-    private final UserService userS;
+    private final PostRepository postRepository;
+    private final UserService userService;
 
     public Post Create(PostCreateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userS.ReadByEmail(auth.getName());
+        User user = userService.ReadByEmail(auth.getName());
         Post post = new Post(
             null, // ID
             user,
@@ -34,15 +33,19 @@ public class PostService {
             dto.description(),
             OffsetDateTime.now()
         );
-        return PostMapper.toDomain(postR.save(PostMapper.toEntity(post)), false);
+        return PostMapper.ToDomain(postRepository.save(PostMapper.ToEntity(post)));
     }
 
-    public List<PostResponseDTO> ReadAll() {
-        return postR.findAll().stream().map(PostMapper::ToResponseDTO).toList();
+    public List<Post> ReadAll() {
+        return postRepository.findAll().stream().map(PostMapper::ToDomain).toList();
     }
 
     public Post ReadByID(UUID id) {
-        return PostMapper.toDomain(postR.findById(id).orElseThrow(() -> new IllegalArgumentException("Post não encontrado")), true);
+        return PostMapper.ToDomain(postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post não encontrado")));
+    }
+
+    public List<Post> ReadAllByAuthorNickname(String nickname) {
+        return (postRepository.findByAuthorNickname(nickname).stream().map(PostMapper::ToDomain).toList());
     }
 
 }

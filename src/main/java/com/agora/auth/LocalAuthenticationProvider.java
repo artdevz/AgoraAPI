@@ -25,7 +25,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
     public User Authenticate(Object request) {
         AuthSigninDTO dto = (AuthSigninDTO) request;
 
-        User user = userR.findByEmailAndProvider(dto.email(), AuthProvider.LOCAL).map(u -> UserMapper.toDomain(u, false)).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
+        User user = userR.findByEmailAndProvider(dto.email(), AuthProvider.LOCAL).map(UserMapper::ToDomain).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
 
         if (!passwordEncoder.matches(dto.password(), user.GetPassword())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials");
 

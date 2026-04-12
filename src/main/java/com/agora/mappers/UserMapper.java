@@ -6,7 +6,8 @@ import com.agora.models.User;
 
 public class UserMapper {
     
-    public static User toDomain(UserEntity entity, boolean details) {
+    // DB -> API
+    public static User ToDomain(UserEntity entity) {
         if (entity == null) return null;
 
         User user = new User(
@@ -18,36 +19,34 @@ public class UserMapper {
             entity.getProvider()
         );
 
-        if (details) {
-            // Mostrar os Posts tbm
-        }
-
         return user;
     }
 
-    public static UserResponseDTO ToResponseDTO(UserEntity entity) {
-        if (entity == null) return null;
-
-        return new UserResponseDTO(
-            entity.getId(),
-            entity.getNickname(),
-            entity.getEmail(),
-            entity.getCreatedAt()
-        );
-    }
-
-    public static UserEntity toEntity(User user) {
-        if (user == null) return null;
+    // API -> DB
+    public static UserEntity ToEntity(User domain) {
+        if (domain == null) return null;
         
         UserEntity entity = new UserEntity();
-        entity.setId(user.GetID());
-        entity.setNickname(user.GetNickname());
-        entity.setEmail(user.GetEmail());
-        entity.setPassword(user.GetPassword());
-        entity.setCreatedAt(user.GetCreatedAt());
-        entity.setProvider(user.GetProvider());
+        entity.setId(domain.GetID());
+        entity.setNickname(domain.GetNickname());
+        entity.setEmail(domain.GetEmail());
+        entity.setPassword(domain.GetPassword());
+        entity.setCreatedAt(domain.GetCreatedAt());
+        entity.setProvider(domain.GetProvider());
 
         return entity;
+    }   
+
+    // API -> OUT
+    public static UserResponseDTO ToResponseDTO(User domain) {
+        if (domain == null) return null;
+
+        return new UserResponseDTO(
+            domain.GetID(),
+            domain.GetNickname(),
+            domain.GetEmail(),
+            domain.GetCreatedAt()
+        );
     }
 
 }

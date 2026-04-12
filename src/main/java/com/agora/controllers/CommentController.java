@@ -28,27 +28,27 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/comment")
 public class CommentController {
 
-    private final CommentService commentS;
+    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<String> Create(@RequestBody @Valid CommentCreateDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentS.Create(dto).GetID().toString());
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.Create(dto).GetID().toString());
     }
 
     @GetMapping("/post/{postID}")
     public ResponseEntity<List<CommentResponseDTO>> ReadByPostID(@PathVariable UUID postID) {
-        return ResponseEntity.ok().body(commentS.ReadAllByPostID(postID).stream().map(CommentMapper::toResponseDTO).toList());
+        return ResponseEntity.ok().body(commentService.ReadAllByPostID(postID).stream().map(CommentMapper::ToResponseDTO).toList());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> Update(@PathVariable UUID id, @RequestBody @Valid CommentUpdateDTO dto) {
-        commentS.Update(id, dto);
+        commentService.Update(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> Delete(@PathVariable UUID id) {
-        commentS.Delete(id);
+        commentService.Delete(id);
         return ResponseEntity.ok().build();
     }
 

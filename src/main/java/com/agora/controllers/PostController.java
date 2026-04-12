@@ -25,21 +25,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/post")
 public class PostController {
     
-    private final PostService postS;
+    private final PostService postService;
 
     @PostMapping
     public ResponseEntity<String> Create(@RequestBody @Valid PostCreateDTO dto) {
         System.out.println("Creating post with title: " + dto.title());
-        return ResponseEntity.status(HttpStatus.CREATED).body(postS.Create(dto).GetID().toString());
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.Create(dto).GetID().toString());
     }
 
     @GetMapping
     public ResponseEntity<List<PostResponseDTO>> ReadAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(postS.ReadAll());
+        return ResponseEntity.status(HttpStatus.OK).body(postService.ReadAll().stream().map(PostMapper::ToResponseDTO).toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDTO> ReadByID(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(PostMapper.ToResponseDTO(PostMapper.toEntity(postS.ReadByID(id))));
+        return ResponseEntity.status(HttpStatus.OK).body(PostMapper.ToResponseDTO(postService.ReadByID(id)));
     }
 }

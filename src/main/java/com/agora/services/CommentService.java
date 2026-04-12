@@ -21,22 +21,22 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CommentService {
     
-    private final CommentRepository commentR;
-    private final PostService postS;
-    private final UserService userS;
+    private final CommentRepository commentRepository;
+    private final PostService postService;
+    private final UserService userService;
 
     public Comment Create(CommentCreateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userS.ReadByEmail(auth.getName());
+        User user = userService.ReadByEmail(auth.getName());
 
         Comment parent = null;
         if (dto.parentID() != null) {
-            parent = CommentMapper.toDomain(commentR.findById(dto.parentID()).orElseThrow(() -> new RuntimeException("Parent comment not found")));
+            parent = CommentMapper.ToDomain(commentRepository.findById(dto.parentID()).orElseThrow(() -> new RuntimeException("Parent comment not found")));
         }
 
         Comment comment = new Comment(
             null, // ID
-            postS.ReadByID(dto.postID()),
+            postService.ReadByID(dto.postID()),
             user,
             OffsetDateTime.now(), 
             dto.content(),
@@ -44,18 +44,22 @@ public class CommentService {
             false,
             parent
         );
-        return CommentMapper.toDomain(commentR.save(CommentMapper.toEntity(comment)));
+        return CommentMapper.ToDomain(commentRepository.save(CommentMapper.ToEntity(comment)));
     }
 
     public List<Comment> ReadAllByPostID(UUID id) {
-        return commentR.findByPostID(id).stream().map(CommentMapper::toDomain).toList();
+        return commentRepository.findByPostID(id).stream().map(CommentMapper::ToDomain).toList();
+    }
+
+    public List<Comment> ReadAllByAuthorNickname(String nickname) {
+        return commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList();
     }
 
     public void Update(UUID id, CommentUpdateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userS.ReadByEmail(auth.getName());
+        User user = userService.ReadByEmail(auth.getName());
         
-        Comment comment = CommentMapper.toDomain(commentR.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
+        Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
         if (comment.isDeleted()) return;
 
         if (!comment.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
@@ -63,21 +67,21 @@ public class CommentService {
         comment.SetContent(dto.content());
         comment.SetEdited(true);
 
-        commentR.save(CommentMapper.toEntity(comment));
+        commentRepository.save(CommentMapper.ToEntity(comment));
     }
 
     public void Delete(UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userS.ReadByEmail(auth.getName());
+        User user = userService.ReadByEmail(auth.getName());
 
-        Comment comment = CommentMapper.toDomain(commentR.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
+        Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
 
         if (!comment.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
 
         comment.SetContent("[Deleted]");
         comment.SetDeleted(true);
 
-        commentR.save(CommentMapper.toEntity(comment));
+        commentRepository.save(CommentMapper.ToEntity(comment));
     }
 
 }

@@ -20,16 +20,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authS;
+    private final AuthService authService;
     
     @PostMapping("/signup")
     public ResponseEntity<AuthResponseDTO> Signup(@RequestBody @Valid AuthSignupDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authS.Signup(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.Signup(dto));
     }
 
     @PostMapping("/signin")
     public ResponseEntity<AuthResponseDTO> Signin(@RequestBody @Valid AuthSigninDTO dto) {
-        return ResponseEntity.status(HttpStatus.OK).body(authS.Signin(dto));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.Signin(dto));
     }
 
 }
