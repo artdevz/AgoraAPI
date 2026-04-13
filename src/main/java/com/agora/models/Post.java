@@ -1,9 +1,9 @@
 package com.agora.models;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+
+import com.agora.enums.SubmitStatus;
 
 public class Post {
 
@@ -12,38 +12,38 @@ public class Post {
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 256;
     
     private UUID id;
-    private User authorID;
+    private User author;
     private String title;
     private String description;
     private OffsetDateTime createdAt;
-
-    private List<Comment> comments = new ArrayList<>();
+    private SubmitStatus status;
 
     public Post() {}
     public Post(
         UUID id,
-        User authorID,
+        User author,
         String title,
         String description,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        SubmitStatus status
     ) {
         this.id = id;
-        this.authorID = authorID;
+        this.author = author;
         SetTitle(title);
         SetDescription(description);
         SetCreatedAt(createdAt);
+        SetStatus(status);
     }
 
     public UUID GetID() { return id; }
-    public User GetAuthorID() { return authorID; }
+    public User GetAuthor() { return author; }
     public String GetTitle() { return title; }
     public String GetDescription() { return description; }
     public OffsetDateTime GetCreatedAt() { return createdAt; }
+    public SubmitStatus GetStatus() { return status; }
 
-    public List<Comment> GetComments() { return comments; }
-
-    public void SetAuthorID(User authorID) {
-        this.authorID = authorID;
+    public void SetAuthorID(User author) {
+        this.author = author;
     }
 
     public void SetTitle(String title) {
@@ -58,6 +58,10 @@ public class Post {
 
     public void SetCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void SetStatus(SubmitStatus status) {
+        this.status = status;
     }
 
 }

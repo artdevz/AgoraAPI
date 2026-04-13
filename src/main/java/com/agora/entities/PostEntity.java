@@ -4,7 +4,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.agora.enums.SubmitStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,15 +34,20 @@ public class PostEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "author")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private UserEntity author;
 
+    @Column(nullable = false)
     private String title;
 
     private String description;
 
     private OffsetDateTime createdAt;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubmitStatus status;
 
     @OneToMany(mappedBy = "post")
     private List<CommentEntity> comments;

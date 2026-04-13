@@ -3,15 +3,16 @@ package com.agora.dto.comment;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.agora.dto.post.PostSummaryDTO;
 import com.agora.dto.user.UserSummaryDTO;
+import com.agora.enums.SubmitStatus;
 
 public record CommentResponseDTO(
     UUID id,
-    UUID postID,
+    PostSummaryDTO post,
     UserSummaryDTO author,
     OffsetDateTime createdAt,
     String content,
-    boolean edited,
-    boolean deleted,
+    SubmitStatus status,
     UUID parentID
 ) {}

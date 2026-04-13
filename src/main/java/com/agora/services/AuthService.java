@@ -34,7 +34,8 @@ public class AuthService {
             user.GetEmail(),
             user.GetPassword(),
             user.GetID(),
-            user.GetNickname()
+            user.GetNickname(),
+            user.GetStatus()
         );
 
         return new AuthResponseDTO(jwtProvider.GenerateToken(userDetails));
@@ -47,7 +48,8 @@ public class AuthService {
             user.GetEmail(),
             user.GetPassword(),
             user.GetID(),
-            user.GetNickname()
+            user.GetNickname(),
+            user.GetStatus()
         );
 
         return new AuthResponseDTO(jwtProvider.GenerateToken(userDetails));

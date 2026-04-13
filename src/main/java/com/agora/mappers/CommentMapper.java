@@ -1,6 +1,7 @@
 package com.agora.mappers;
 
 import com.agora.dto.comment.CommentResponseDTO;
+import com.agora.dto.post.PostSummaryDTO;
 import com.agora.dto.user.UserSummaryDTO;
 import com.agora.entities.CommentEntity;
 import com.agora.models.Comment;
@@ -17,8 +18,7 @@ public class CommentMapper {
             UserMapper.ToDomain(entity.getAuthor()),
             entity.getCreatedAt(),
             entity.getContent(),
-            entity.isEdited(),
-            entity.isDeleted(),
+            entity.getStatus(),
             entity.getParent() != null ? ToDomain(entity.getParent()) : null
         );
 
@@ -35,8 +35,7 @@ public class CommentMapper {
         entity.setAuthor(UserMapper.ToEntity(domain.GetAuthor()));
         entity.setCreatedAt(domain.GetCreatedAt());
         entity.setContent(domain.GetContent());
-        entity.setEdited(domain.IsEdited());
-        entity.setDeleted(domain.isDeleted());
+        entity.setStatus(domain.GetStatus());
         entity.setParent(domain.GetParent() != null ? ToEntity(domain.GetParent()) : null);
 
         return entity;
@@ -48,15 +47,17 @@ public class CommentMapper {
 
         return new CommentResponseDTO(
             domain.GetID(),
-            domain.GetPost().GetID(),
+            new PostSummaryDTO(
+                domain.GetPost().GetID(),
+                domain.GetPost().GetTitle()
+            ),
             new UserSummaryDTO(
                 domain.GetAuthor().GetID(),
                 domain.GetAuthor().GetNickname()
             ),
             domain.GetCreatedAt(),
             domain.GetContent(),
-            domain.IsEdited(),
-            domain.isDeleted(),
+            domain.GetStatus(),
             domain.GetParent() != null ? domain.GetParent().GetID() : null
         );
     }

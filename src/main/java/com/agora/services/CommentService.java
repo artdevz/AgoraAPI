@@ -4,12 +4,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.agora.dto.comment.CommentCreateDTO;
 import com.agora.dto.comment.CommentUpdateDTO;
+import com.agora.enums.SubmitStatus;
 import com.agora.mappers.CommentMapper;
 import com.agora.models.Comment;
 import com.agora.models.User;
@@ -40,10 +43,12 @@ public class CommentService {
             user,
             OffsetDateTime.now(), 
             dto.content(),
-            false, // Edited
-            false,
+            SubmitStatus.ACTIVE,
             parent
         );
+
+        if (comment.GetPost().GetStatus() == SubmitStatus.DELETED) throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't comment on a deleted post");
+
         return CommentMapper.ToDomain(commentRepository.save(CommentMapper.ToEntity(comment)));
     }
 
@@ -60,12 +65,12 @@ public class CommentService {
         User user = userService.ReadByEmail(auth.getName());
         
         Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
-        if (comment.isDeleted()) return;
+        if (comment.GetStatus() == SubmitStatus.DELETED) return;
 
         if (!comment.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
 
         comment.SetContent(dto.content());
-        comment.SetEdited(true);
+        comment.SetStatus(SubmitStatus.EDITED);
 
         commentRepository.save(CommentMapper.ToEntity(comment));
     }
@@ -78,8 +83,7 @@ public class CommentService {
 
         if (!comment.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
 
-        comment.SetContent("[Deleted]");
-        comment.SetDeleted(true);
+        comment.SetStatus(SubmitStatus.DELETED);
 
         commentRepository.save(CommentMapper.ToEntity(comment));
     }

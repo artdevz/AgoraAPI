@@ -4,11 +4,13 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.agora.dto.user.UserSummaryDTO;
+import com.agora.enums.SubmitStatus;
 
 public record PostResponseDTO(
     UUID id,
     UserSummaryDTO author,
     String title,
     String description,
-    OffsetDateTime createdAt
+    OffsetDateTime createdAt,
+    SubmitStatus status
 ) {}

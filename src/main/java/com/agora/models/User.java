@@ -1,11 +1,10 @@
 package com.agora.models;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.agora.enums.AuthProvider;
+import com.agora.enums.UserStatus;
 
 public class User {
 
@@ -17,12 +16,11 @@ public class User {
     private String nickname;
     private String email;
     private String password;
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
+    private UserStatus status;
 
     private AuthProvider provider;
     private String providerID; // Via Google
-
-    private List<Comment> comments = new ArrayList<>();
 
     public User() {}
     public User(
@@ -30,8 +28,9 @@ public class User {
         String nickname,
         String email,
         String password,
-        LocalDate createdAt,
-        AuthProvider provider
+        OffsetDateTime createdAt,
+        AuthProvider provider,
+        UserStatus status
     ) {
         this.id = id;
         SetNickname(nickname);
@@ -39,18 +38,18 @@ public class User {
         SetPassword(password);
         SetCreatedAt(createdAt);
         SetProvider(provider);
+        SetStatus(status);
     }
 
     public UUID GetID() { return id; }
     public String GetNickname() { return nickname; }
     public String GetEmail() { return email; }
     public String GetPassword() { return password; }
-    public LocalDate GetCreatedAt() { return createdAt; }
+    public OffsetDateTime GetCreatedAt() { return createdAt; }
+    public UserStatus GetStatus() { return status; }
 
     public AuthProvider GetProvider() { return provider; }
     public String GetProviderID() { return providerID; }
-
-    public List<Comment> GetComments() { return comments; }
 
     public void SetNickname(String nickname) {
         if (nickname.length() < MINIMUM_NAME_LENGTH || nickname.length() > MAXIMUM_NAME_LENGTH) throw new IllegalArgumentException("Nickname deve ter entre " + MINIMUM_NAME_LENGTH + " e " + MAXIMUM_NAME_LENGTH + " caracteres");
@@ -66,8 +65,12 @@ public class User {
         this.password = password;
     }
 
-    public void SetCreatedAt(LocalDate createdAt) {
+    public void SetCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void SetStatus(UserStatus status) {
+        this.status = status;
     }
 
     public void SetProvider(AuthProvider provider) {

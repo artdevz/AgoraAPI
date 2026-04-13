@@ -13,4 +13,7 @@ public interface PostRepository extends JpaRepository<PostEntity, UUID> {
     @Query("SELECT p FROM Post p WHERE p.author.nickname = :nickname")
     List<PostEntity> findByAuthorNickname(String nickname);
 
+    // To-Do: Query excluindo os usuários silenciados
+    // List<PostEntity> findFeed(UUID userID); 
+
 }

@@ -3,7 +3,12 @@ package com.agora.entities;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.agora.enums.SubmitStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,21 +32,21 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;
     
-    @ManyToOne
-    @JoinColumn(name = "author")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private UserEntity author;
 
     private OffsetDateTime createdAt;
 
     private String content;
 
-    private boolean edited;
-
-    private boolean deleted;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubmitStatus status;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

@@ -10,7 +10,7 @@ import com.agora.entities.CommentEntity;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, UUID> {
     
-    @Query("SELECT c FROM Comment c WHERE c.post.id = :postID")
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postID ORDER BY c.createdAt ASC")
     List<CommentEntity> findByPostID(UUID postID);
 
     @Query("SELECT c FROM Comment c WHERE c.author.nickname = :nickname")

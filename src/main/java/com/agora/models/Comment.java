@@ -3,6 +3,8 @@ package com.agora.models;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.agora.enums.SubmitStatus;
+
 public class Comment {
 
     private static final int MAXIMUM_CONTENT_LENGTH = 2048;
@@ -12,8 +14,7 @@ public class Comment {
     private User author;
     private OffsetDateTime createdAt;
     private String content;
-    private boolean edited;
-    private boolean deleted;
+    private SubmitStatus status;
 
     private Comment parent;
 
@@ -24,8 +25,7 @@ public class Comment {
         User author,
         OffsetDateTime createdAt,
         String content,
-        boolean edited,
-        boolean deleted,
+        SubmitStatus status,
         Comment parent
     ) {
         if (post == null) throw new IllegalArgumentException("Post não pode ser nulo");
@@ -37,8 +37,7 @@ public class Comment {
         SetAuthor(author);
         SetCreatedAt(createdAt);
         SetContent(content);
-        SetEdited(edited);
-        SetDeleted(deleted);
+        SetStatus(status);
         SetParent(parent);
     }
 
@@ -47,8 +46,7 @@ public class Comment {
     public User GetAuthor() { return author; }
     public OffsetDateTime GetCreatedAt() { return createdAt; }
     public String GetContent() { return content; }
-    public boolean IsEdited() { return edited; }
-    public boolean isDeleted() { return deleted; }
+    public SubmitStatus GetStatus() { return status; }
     public Comment GetParent() { return parent; }
 
     public void SetPost(Post post) {
@@ -68,12 +66,8 @@ public class Comment {
         this.content = content;
     }
 
-    public void SetEdited(boolean edited) {
-        this.edited = edited;
-    }
-
-    public void SetDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void SetStatus(SubmitStatus status) {
+        this.status = status;
     }
 
     public void SetParent(Comment parent) {

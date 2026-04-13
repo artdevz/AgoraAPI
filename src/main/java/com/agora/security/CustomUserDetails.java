@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.RequiredArgsConstructor;
 
+import com.agora.enums.UserStatus;
+
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
     
@@ -19,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
 
     private final UUID id;
     private final String nickname;
+    private final UserStatus status;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,9 +46,13 @@ public class CustomUserDetails implements UserDetails {
         return nickname;
     }
 
+    public UserStatus getStatus() {
+        return status;
+    }
+
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
+    @Override public boolean isEnabled() { return status == UserStatus.ACTIVE; }
 
 }

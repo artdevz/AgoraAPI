@@ -16,7 +16,8 @@ public class UserMapper {
             entity.getEmail(),
             entity.getPassword(),
             entity.getCreatedAt(),
-            entity.getProvider()
+            entity.getProvider(),
+            entity.getStatus()
         );
 
         return user;
@@ -32,6 +33,7 @@ public class UserMapper {
         entity.setEmail(domain.GetEmail());
         entity.setPassword(domain.GetPassword());
         entity.setCreatedAt(domain.GetCreatedAt());
+        entity.setStatus(domain.GetStatus());
         entity.setProvider(domain.GetProvider());
 
         return entity;
@@ -45,7 +47,8 @@ public class UserMapper {
             domain.GetID(),
             domain.GetNickname(),
             domain.GetEmail(),
-            domain.GetCreatedAt()
+            domain.GetCreatedAt(),
+            domain.GetStatus()
         );
     }
 
