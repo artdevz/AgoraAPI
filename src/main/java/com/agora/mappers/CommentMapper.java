@@ -12,6 +12,12 @@ public class CommentMapper {
     public static Comment ToDomain(CommentEntity entity) {
         if (entity == null) return null;
 
+        Comment parent = null;
+        if (entity.getParent() != null) {
+            parent = new Comment();
+            parent.SetID(entity.getParent().getId());
+        }
+
         Comment comment = new Comment(
             entity.getId(),
             PostMapper.ToDomain(entity.getPost()),
@@ -19,7 +25,7 @@ public class CommentMapper {
             entity.getCreatedAt(),
             entity.getContent(),
             entity.getStatus(),
-            entity.getParent() != null ? ToDomain(entity.getParent()) : null
+            parent
         );
 
         return comment;
@@ -28,15 +34,20 @@ public class CommentMapper {
     // API -> DB
     public static CommentEntity ToEntity(Comment domain) {
         if (domain == null) return null;
-        
+
         CommentEntity entity = new CommentEntity();
+        if (domain.GetParent() != null) {
+            CommentEntity parent = new CommentEntity();
+            parent.setId(domain.GetParent().GetID());
+            entity.setParent(parent);
+        }
+        
         entity.setId(domain.GetID());
         entity.setPost(PostMapper.ToEntity(domain.GetPost()));
         entity.setAuthor(UserMapper.ToEntity(domain.GetAuthor()));
         entity.setCreatedAt(domain.GetCreatedAt());
         entity.setContent(domain.GetContent());
         entity.setStatus(domain.GetStatus());
-        entity.setParent(domain.GetParent() != null ? ToEntity(domain.GetParent()) : null);
 
         return entity;
     }
@@ -58,7 +69,8 @@ public class CommentMapper {
             domain.GetCreatedAt(),
             domain.GetContent(),
             domain.GetStatus(),
-            domain.GetParent() != null ? domain.GetParent().GetID() : null
+            // domain.GetParent() != null ? domain.GetParent().GetID() : null
+            domain.GetReplies().stream().map(CommentMapper::ToResponseDTO).toList()
         );
     }
 

@@ -36,7 +36,6 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<String> Create(@RequestBody @Valid PostCreateDTO dto) {
-        System.out.println("Creating post with title: " + dto.title());
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.Create(dto).GetID().toString());
     }
 

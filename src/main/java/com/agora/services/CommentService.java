@@ -1,8 +1,11 @@
 package com.agora.services;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -53,11 +56,11 @@ public class CommentService {
     }
 
     public List<Comment> ReadAllByPostID(UUID id) {
-        return commentRepository.findByPostID(id).stream().map(CommentMapper::ToDomain).toList();
+        return BuildTree(commentRepository.findByPostID(id).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public List<Comment> ReadAllByAuthorNickname(String nickname) {
-        return commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList();
+        return BuildTree(commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public void Update(UUID id, CommentUpdateDTO dto) {
@@ -86,6 +89,29 @@ public class CommentService {
         comment.SetStatus(SubmitStatus.DELETED);
 
         commentRepository.save(CommentMapper.ToEntity(comment));
+    }
+
+    private List<Comment> BuildTree(List<Comment> comments) {
+        Map<UUID, Comment> map = comments.stream().collect(Collectors.toMap(Comment::GetID, c -> c));
+
+        comments.forEach(c -> c.GetReplies().clear());
+
+        List<Comment> roots = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            if (comment.GetParent() == null) {
+                roots.add(comment);
+            }
+            else {
+                Comment parent = map.get(comment.GetParent().GetID());
+
+                if (parent != null) {
+                    parent.AddReply(comment);
+                }
+            }
+        }
+
+        return roots;
     }
 
 }

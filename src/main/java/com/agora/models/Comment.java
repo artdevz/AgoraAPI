@@ -1,6 +1,8 @@
 package com.agora.models;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.agora.enums.SubmitStatus;
@@ -17,6 +19,7 @@ public class Comment {
     private SubmitStatus status;
 
     private Comment parent;
+    private List<Comment> replies = new ArrayList<>();
 
     public Comment() {}
     public Comment(
@@ -48,6 +51,12 @@ public class Comment {
     public String GetContent() { return content; }
     public SubmitStatus GetStatus() { return status; }
     public Comment GetParent() { return parent; }
+    public List<Comment> GetReplies() { return replies; }
+
+    // Utilizado pra fazer o Composite do Parent
+    public void SetID(UUID id) {
+        this.id = id;
+    }
 
     public void SetPost(Post post) {
         this.post = post;
@@ -71,16 +80,35 @@ public class Comment {
     }
 
     public void SetParent(Comment parent) {
-        // if (parent != null && parent.GetParent() != null) {
-        //     throw new IllegalArgumentException("Não é permitido criar um comentário com mais de um nível de resposta");
-        // }
-        // if (parent != null && !parent.GetPost().GetID().equals(this.post.GetID())) {
-        //     throw new IllegalArgumentException("O comentário pai deve pertencer ao mesmo post do comentário filho");
-        // }
-        // if (parent != null && parent.GetID().equals(this.id)) {
-        //     throw new IllegalArgumentException("Um comentário não pode ser pai de si mesmo");
-        // }
+        if (parent != null && parent.isAncestorOf(this)) {
+            throw new IllegalArgumentException("Ciclo detectado na árvore de comentários");
+        }
+
+        if (this.parent != null) {
+            this.parent.replies.remove(this);
+        }
+
         this.parent = parent;
+
+        if (parent != null && !parent.replies.contains(this)) {
+            parent.replies.add(this);
+        }
+    }
+
+    public void AddReply(Comment reply) {
+        if (reply == null) return;
+
+        reply.SetParent(this);
+    }
+
+    private boolean isAncestorOf(Comment node) {
+        Comment current = this;
+
+        while (current != null) {
+            if (current == node) return true;
+            current = current.parent;
+        }
+        return false;
     }
     
 }

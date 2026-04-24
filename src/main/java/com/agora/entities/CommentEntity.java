@@ -1,6 +1,8 @@
 package com.agora.entities;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.agora.enums.SubmitStatus;
@@ -14,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,5 +54,8 @@ public class CommentEntity {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private CommentEntity parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<CommentEntity> replies = new ArrayList<>();
 
 }

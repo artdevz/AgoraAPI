@@ -18,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
     
     private static final String SECRET = "SuperSecretKeyForJwtGenerationSuperSecretKeyForJwtGeneration";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 Dia (Dev) // 1000 * 60 * 60; // 1 hora
 
     private SecretKey GetSignKey() {
         /*byte[] keyBytes = Decoders.BASE64.decode(SECRET);
