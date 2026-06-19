@@ -40,15 +40,15 @@ public class CommentService {
             parent = CommentMapper.ToDomain(commentRepository.findById(dto.parentID()).orElseThrow(() -> new RuntimeException("Parent comment not found")));
         }
 
-        Comment comment = new Comment(
-            null, // ID
-            postService.ReadByID(dto.postID()),
-            user,
-            OffsetDateTime.now(), 
-            dto.content(),
-            SubmitStatus.ACTIVE,
-            parent
-        );
+        Comment comment = Comment.builder()
+            .id(null)
+            .post(postService.ReadByID(dto.postID()))
+            .author(user)
+            .createdAt(OffsetDateTime.now())
+            .content(dto.content())
+            .status(SubmitStatus.ACTIVE)
+            .parent(parent)
+        .build();
 
         if (comment.GetPost().GetStatus() == SubmitStatus.DELETED) throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't comment on a deleted post");
 

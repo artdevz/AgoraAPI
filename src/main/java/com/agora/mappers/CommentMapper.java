@@ -18,15 +18,15 @@ public class CommentMapper {
             parent.SetID(entity.getParent().getId());
         }
 
-        Comment comment = new Comment(
-            entity.getId(),
-            PostMapper.ToDomain(entity.getPost()),
-            UserMapper.ToDomain(entity.getAuthor()),
-            entity.getCreatedAt(),
-            entity.getContent(),
-            entity.getStatus(),
-            parent
-        );
+        Comment comment = Comment.builder()
+            .id(entity.getId())
+            .post(PostMapper.ToDomain(entity.getPost()))
+            .author(UserMapper.ToDomain(entity.getAuthor()))
+            .createdAt(entity.getCreatedAt())
+            .content(entity.getContent())
+            .status(entity.getStatus())
+            .parent(parent)
+        .build();
 
         return comment;
     }

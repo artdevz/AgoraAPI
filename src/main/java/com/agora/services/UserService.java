@@ -1,6 +1,7 @@
 package com.agora.services;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,9 +10,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.agora.collectors.UserCollection;
 import com.agora.dto.user.UserCreateDTO;
 import com.agora.dto.user.UserUpdateDTO;
 import com.agora.enums.UserStatus;
+import com.agora.interfaces.UserIterator;
 import com.agora.mappers.UserMapper;
 import com.agora.models.User;
 import com.agora.repositories.UserRepository;
@@ -26,20 +29,37 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User Create(UserCreateDTO dto) {
-        User user = new User(
-            null, // ID
-            dto.nickname(),
-            dto.email(),
-            passwordEncoder.encode(dto.password()),
-            OffsetDateTime.now(),
-            dto.provider(),
-            UserStatus.ACTIVE
-        );
+        User user = User.builder()
+            .id(null)
+            .nickname(dto.nickname())
+            .email(dto.email())
+            .password(passwordEncoder.encode(dto.password()))
+            .createdAt(OffsetDateTime.now())
+            .provider(dto.provider())
+            .status(UserStatus.ACTIVE)
+        .build();
         return UserMapper.ToDomain(userRepository.save(UserMapper.ToEntity(user)));
     }
 
     public List<User> ReadAll() {
         return userRepository.findAll().stream().map(UserMapper::ToDomain).toList();
+    }
+
+    public List<User> ReadActives() {
+        List<User> users = userRepository.findAll().stream().map(UserMapper::ToDomain).toList();
+
+        UserCollection userCollection = new UserCollection();
+        for (User user : users) userCollection.Add(user);
+
+        UserIterator iterator = userCollection.ActiveUsersIterator();
+
+        List<User> activeUsers = new ArrayList<>();
+        
+        while (iterator.HasNext()) {
+            activeUsers.add(iterator.Next());
+        }
+
+        return (activeUsers);
     }
 
     public User ReadByID(UUID id) {

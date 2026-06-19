@@ -9,36 +9,29 @@ public class Post {
 
     private static final int MINIMUM_TITLE_LENGTH = 1;
     private static final int MAXIMUM_TITLE_LENGTH = 64;
-    private static final int MAXIMUM_DESCRIPTION_LENGTH = 256;
+    private static final int MAXIMUM_CONTENT_LENGTH = 256;
     
     private UUID id;
     private User author;
     private String title;
-    private String description;
+    private String content;
     private OffsetDateTime createdAt;
     private SubmitStatus status;
 
     public Post() {}
-    public Post(
-        UUID id,
-        User author,
-        String title,
-        String description,
-        OffsetDateTime createdAt,
-        SubmitStatus status
-    ) {
-        this.id = id;
-        this.author = author;
-        SetTitle(title);
-        SetDescription(description);
-        SetCreatedAt(createdAt);
-        SetStatus(status);
+    public Post(Builder builder) {
+        this.id = builder.id;
+        this.author = builder.author;
+        SetTitle(builder.title);
+        SetContent(builder.content);
+        SetCreatedAt(builder.createdAt);
+        SetStatus(builder.status);
     }
 
     public UUID GetID() { return id; }
     public User GetAuthor() { return author; }
     public String GetTitle() { return title; }
-    public String GetDescription() { return description; }
+    public String GetContent() { return content; }
     public OffsetDateTime GetCreatedAt() { return createdAt; }
     public SubmitStatus GetStatus() { return status; }
 
@@ -51,9 +44,9 @@ public class Post {
         this.title = title;
     }
 
-    public void SetDescription(String description) {
-        if (description.length() > MAXIMUM_DESCRIPTION_LENGTH) throw new IllegalArgumentException("Description deve ter no máximo " + MAXIMUM_DESCRIPTION_LENGTH + " caracteres");
-        this.description = description;
+    public void SetContent(String content) {
+        if (content.length() > MAXIMUM_CONTENT_LENGTH) throw new IllegalArgumentException("Content deve ter no máximo " + MAXIMUM_CONTENT_LENGTH + " caracteres");
+        this.content = content;
     }
 
     public void SetCreatedAt(OffsetDateTime createdAt) {
@@ -62,6 +55,53 @@ public class Post {
 
     public void SetStatus(SubmitStatus status) {
         this.status = status;
+    }
+
+    public static class Builder {
+        private UUID id;
+        private User author;
+        private String title;
+        private String content;
+        private OffsetDateTime createdAt;
+        private SubmitStatus status;
+
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder author(User author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder status(SubmitStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Post build() {
+            return new Post(this);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
 }

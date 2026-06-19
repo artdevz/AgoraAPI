@@ -29,14 +29,15 @@ public class PostService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
         
-        Post post = new Post(
-            null, // ID
-            user,
-            dto.title(),
-            dto.description(),
-            OffsetDateTime.now(),
-            SubmitStatus.ACTIVE
-        );
+        Post post = Post.builder()
+            .id(null)
+            .author(user)
+            .title(dto.title())
+            .content(dto.content())
+            .createdAt(OffsetDateTime.now())
+            .status(SubmitStatus.ACTIVE)
+        .build();
+
         return PostMapper.ToDomain(postRepository.save(PostMapper.ToEntity(post)));
     }
 
@@ -61,7 +62,7 @@ public class PostService {
 
         if (!post.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
         
-        post.SetDescription(dto.description());
+        post.SetContent(dto.content());
         post.SetStatus(SubmitStatus.EDITED);
 
         postRepository.save(PostMapper.ToEntity(post));
