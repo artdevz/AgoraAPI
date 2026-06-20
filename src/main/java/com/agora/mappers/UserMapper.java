@@ -10,15 +10,15 @@ public class UserMapper {
     public static User ToDomain(UserEntity entity) {
         if (entity == null) return null;
 
-        User user = new User(
-            entity.getId(),
-            entity.getNickname(),
-            entity.getEmail(),
-            entity.getPassword(),
-            entity.getCreatedAt(),
-            entity.getProvider(),
-            entity.getStatus()
-        );
+        User user = User.builder()
+            .id(entity.getId())
+            .nickname(entity.getNickname())
+            .email(entity.getEmail())
+            .password(entity.getPassword())
+            .createdAt(entity.getCreatedAt())
+            .provider(entity.getProvider())
+            .status(entity.getStatus())
+        .build();
 
         return user;
     }

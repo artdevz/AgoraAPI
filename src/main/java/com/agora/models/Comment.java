@@ -22,26 +22,18 @@ public class Comment {
     private List<Comment> replies = new ArrayList<>();
 
     public Comment() {}
-    public Comment(
-        UUID id,
-        Post post,
-        User author,
-        OffsetDateTime createdAt,
-        String content,
-        SubmitStatus status,
-        Comment parent
-    ) {
-        if (post == null) throw new IllegalArgumentException("Post não pode ser nulo");
-        if (author == null) throw new IllegalArgumentException("Author não pode ser nulo");
-        if (content == null) throw new IllegalArgumentException("Content não pode ser nulo");
+    public Comment(Builder builder) {
+        if (builder.post == null) throw new IllegalArgumentException("Post não pode ser nulo");
+        if (builder.author == null) throw new IllegalArgumentException("Author não pode ser nulo");
+        if (builder.content == null) throw new IllegalArgumentException("Content não pode ser nulo");
 
-        this.id = id;
-        SetPost(post);
-        SetAuthor(author);
-        SetCreatedAt(createdAt);
-        SetContent(content);
-        SetStatus(status);
-        SetParent(parent);
+        this.id = builder.id;
+        SetPost(builder.post);
+        SetAuthor(builder.author);
+        SetCreatedAt(builder.createdAt);
+        SetContent(builder.content);
+        SetStatus(builder.status);
+        SetParent(builder.parent);
     }
 
     public UUID GetID() { return id; }
@@ -109,6 +101,59 @@ public class Comment {
             current = current.parent;
         }
         return false;
+    }
+
+    public static class Builder {
+        private UUID id;
+        private Post post;
+        private User author;
+        private OffsetDateTime createdAt;
+        private String content;
+        private SubmitStatus status;
+        private Comment parent;
+
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder post(Post post) {
+            this.post = post;
+            return this;
+        }
+
+        public Builder author(User author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder status(SubmitStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder parent(Comment parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Comment build() {
+            return new Comment(this);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
     
 }
