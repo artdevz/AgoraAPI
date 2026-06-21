@@ -56,7 +56,10 @@ public class CommentService {
     }
 
     public List<Comment> ReadAllByPostID(UUID id) {
-        return BuildTree(commentRepository.findByPostID(id).stream().map(CommentMapper::ToDomain).toList());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        return BuildTree(commentRepository.findByPostID(id, user.GetID()).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public List<Comment> ReadAllByAuthorNickname(String nickname) {
