@@ -49,6 +49,13 @@ public class PostService {
         return PostMapper.ToDomain(postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found")));
     }
 
+    public List<Post> ReadNewPosts() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        return postRepository.findFeedNew(user.GetID()).stream().map(PostMapper::ToDomain).toList();
+    }
+
     public List<Post> ReadAllByAuthorNickname(String nickname) {
         return (postRepository.findByAuthorNickname(nickname).stream().map(PostMapper::ToDomain).toList());
     }

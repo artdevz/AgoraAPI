@@ -44,6 +44,11 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.ReadAll().stream().map(PostMapper::ToResponseDTO).toList());
     }
 
+    @GetMapping("/feed/new")
+    public ResponseEntity<List<PostResponseDTO>> ReadNewPosts() {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.ReadNewPosts().stream().map(PostMapper::ToResponseDTO).toList());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDTO> ReadByID(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(PostMapper.ToResponseDTO(postService.ReadByID(id)));

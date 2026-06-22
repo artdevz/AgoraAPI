@@ -13,7 +13,15 @@ public interface PostRepository extends JpaRepository<PostEntity, UUID> {
     @Query("SELECT p FROM Post p WHERE p.author.nickname = :nickname")
     List<PostEntity> findByAuthorNickname(String nickname);
 
-    // To-Do: Query excluindo os usuários silenciados
-    // List<PostEntity> findFeed(UUID userID); 
+    @Query("""
+        SELECT p FROM Post p
+        WHERE p.author.id NOT IN (
+            SELECT m.muted.id
+            FROM UserMuteEntity m
+            WHERE m.muter.id = :currentUserID
+        )
+        ORDER BY p.createdAt DESC
+    """)
+    List<PostEntity> findFeedNew(UUID currentUserID);
 
 }
