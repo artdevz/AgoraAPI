@@ -3,10 +3,12 @@ package com.agora.security;
 // import java.security.Key;
 // import java.security.PublicKey;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -27,9 +29,12 @@ public class JwtProvider {
     }
 
     public String GenerateToken(CustomUserDetails user) {
+        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
         return Jwts.builder()
             .subject(user.getId().toString())
             .claim("nickname", user.getNickname())
+            .claim("roles", roles)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(GetSignKey())

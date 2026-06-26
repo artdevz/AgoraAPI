@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.agora.entities.UserMuteEntity;
+import com.agora.enums.UserStatus;
 import com.agora.mappers.UserMapper;
 import com.agora.models.User;
 import com.agora.repositories.MuteRepository;
@@ -27,6 +28,8 @@ public class MuteService {
     public void Mute(UUID userID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
         
         if (user.GetID() == userID) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é permitido silenciar a si mesmo");
 

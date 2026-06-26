@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.agora.dto.comment.CommentCreateDTO;
 import com.agora.dto.comment.CommentUpdateDTO;
 import com.agora.enums.SubmitStatus;
+import com.agora.enums.UserStatus;
 import com.agora.mappers.CommentMapper;
 import com.agora.models.Comment;
 import com.agora.models.User;
@@ -34,6 +35,8 @@ public class CommentService {
     public Comment Create(CommentCreateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
 
         Comment parent = null;
         if (dto.parentID() != null) {
@@ -59,16 +62,25 @@ public class CommentService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
 
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         return BuildTree(commentRepository.findByPostID(id, user.GetID()).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public List<Comment> ReadAllByAuthorNickname(String nickname) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         return BuildTree(commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public void Update(UUID id, CommentUpdateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
         
         Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
         if (comment.GetStatus() == SubmitStatus.DELETED) return;
@@ -84,6 +96,8 @@ public class CommentService {
     public void Delete(UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
 
         Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
 

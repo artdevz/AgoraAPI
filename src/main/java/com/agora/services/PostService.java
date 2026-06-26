@@ -4,13 +4,16 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.agora.dto.post.PostCreateDTO;
 import com.agora.dto.post.PostUpdateDTO;
 import com.agora.enums.SubmitStatus;
+import com.agora.enums.UserStatus;
 import com.agora.mappers.PostMapper;
 import com.agora.models.Post;
 import com.agora.models.User;
@@ -53,16 +56,25 @@ public class PostService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
 
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         return postRepository.findFeedNew(user.GetID()).stream().map(PostMapper::ToDomain).toList();
     }
 
     public List<Post> ReadAllByAuthorNickname(String nickname) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         return (postRepository.findByAuthorNickname(nickname).stream().map(PostMapper::ToDomain).toList());
     }
 
     public void Update(UUID id, PostUpdateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
 
         Post post = PostMapper.ToDomain(postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found")));
         if (post.GetStatus() == SubmitStatus.DELETED) return;
@@ -78,6 +90,8 @@ public class PostService {
     public void Delete(UUID id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
 
         Post post = PostMapper.ToDomain(postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found")));
 

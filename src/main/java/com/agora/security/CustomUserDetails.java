@@ -1,12 +1,10 @@
 package com.agora.security;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +17,15 @@ public class CustomUserDetails implements UserDetails {
     private final String email;
     private final String password;
 
+    private final Collection<? extends GrantedAuthority> authorities;
+
     private final UUID id;
     private final String nickname;
     private final UserStatus status;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return authorities;
     }
 
     @Override

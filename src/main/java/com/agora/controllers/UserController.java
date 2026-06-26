@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.agora.dto.post.PostResponseDTO;
 import com.agora.dto.user.UserCreateDTO;
 import com.agora.dto.user.UserResponseDTO;
 import com.agora.dto.user.UserUpdateDTO;
+import com.agora.enums.UserRole;
 import com.agora.mappers.CommentMapper;
 import com.agora.mappers.PostMapper;
 import com.agora.mappers.UserMapper;
@@ -69,15 +71,30 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> Update(@PathVariable UUID id) {
-        userService.UpdateStatus(id);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping()
     public ResponseEntity<Void> Delete() {
         userService.Delete();
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/role")
+    public ResponseEntity<Void> UpdateRole(@RequestBody @Valid @PathVariable UUID id, UserRole role) {
+        userService.UpdateRole(id, role);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MOD')")
+    @PutMapping("/{id}/ban")
+    public ResponseEntity<Void> Ban(@PathVariable UUID id) {
+        userService.Ban(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/unban")
+    public ResponseEntity<Void> Unban(@PathVariable UUID id) {
+        userService.Active(id);
         return ResponseEntity.ok().build();
     }
 
