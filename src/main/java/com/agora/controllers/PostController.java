@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agora.dto.comment.CommentResponseDTO;
@@ -42,6 +43,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<List<PostResponseDTO>> ReadAll() {
         return ResponseEntity.status(HttpStatus.OK).body(postService.ReadAll().stream().map(PostMapper::ToResponseDTO).toList());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponseDTO>> Search(@RequestParam String query) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.Search(query).stream().map(PostMapper::ToResponseDTO).toList());
     }
 
     @GetMapping("/feed/new")

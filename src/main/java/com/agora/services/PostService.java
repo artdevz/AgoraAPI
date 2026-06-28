@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.agora.dto.post.PostCreateDTO;
 import com.agora.dto.post.PostUpdateDTO;
+import com.agora.entities.PostEntity;
 import com.agora.enums.SubmitStatus;
 import com.agora.enums.UserStatus;
 import com.agora.mappers.PostMapper;
@@ -27,6 +28,7 @@ public class PostService {
     
     private final PostRepository postRepository;
     private final UserService userService;
+    private final EmbeddingService embeddingService;
 
     public Post Create(PostCreateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -41,7 +43,13 @@ public class PostService {
             .status(SubmitStatus.ACTIVE)
         .build();
 
-        return PostMapper.ToDomain(postRepository.save(PostMapper.ToEntity(post)));
+        PostEntity postEntity = PostMapper.ToEntity(post);
+        
+        float[] embedding = embeddingService.Generate(String.join("\n", post.GetTitle(), post.GetContent()));
+
+        postEntity.setEmbedding(embedding);
+
+        return PostMapper.ToDomain(postRepository.save(postEntity));
     }
 
     public List<Post> ReadAll() {
@@ -52,12 +60,19 @@ public class PostService {
         return PostMapper.ToDomain(postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found")));
     }
 
+    public List<Post> Search(String query) {
+        float[] embedding = embeddingService.Generate(query);
+
+        return postRepository.searchSemantic(embedding).stream().map(PostMapper::ToDomain).toList(); // COM IA
+        // return postRepository.searchText(query).stream().map(PostMapper::ToDomain).toList(); // SEM IA
+    }
+
     public List<Post> ReadNewPosts() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
 
         if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
-
+        
         return postRepository.findFeedNew(user.GetID()).stream().map(PostMapper::ToDomain).toList();
     }
 
