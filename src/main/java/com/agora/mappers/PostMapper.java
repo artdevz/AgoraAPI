@@ -11,14 +11,14 @@ public class PostMapper {
     public static Post ToDomain(PostEntity entity) {
         if (entity == null) return null;
 
-        Post post = new Post(
-            entity.getId(),
-            UserMapper.ToDomain(entity.getAuthor()),
-            entity.getTitle(),
-            entity.getDescription(),
-            entity.getCreatedAt(),
-            entity.getStatus()
-        );
+        Post post = Post.builder()
+            .id(entity.getId())
+            .author(UserMapper.ToDomain(entity.getAuthor()))
+            .title(entity.getTitle())
+            .content(entity.getContent())
+            .createdAt(entity.getCreatedAt())
+            .status(entity.getStatus())
+        .build();
 
         return post;
     }
@@ -31,7 +31,7 @@ public class PostMapper {
         entity.setId(domain.GetID());
         entity.setAuthor(UserMapper.ToEntity(domain.GetAuthor()));
         entity.setTitle(domain.GetTitle());
-        entity.setDescription(domain.GetDescription());
+        entity.setContent(domain.GetContent());
         entity.setCreatedAt(domain.GetCreatedAt());
         entity.setStatus(domain.GetStatus());
 
@@ -49,7 +49,7 @@ public class PostMapper {
                 domain.GetAuthor().GetNickname()
             ),
             domain.GetTitle(),
-            domain.GetDescription(),
+            domain.GetContent(),
             domain.GetCreatedAt(),
             domain.GetStatus()
         );

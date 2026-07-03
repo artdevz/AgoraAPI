@@ -4,6 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.agora.enums.SubmitStatus;
 
 import jakarta.persistence.Column;
@@ -41,7 +44,7 @@ public class PostEntity {
     @Column(nullable = false)
     private String title;
 
-    private String description;
+    private String content;
 
     private OffsetDateTime createdAt;
 
@@ -51,5 +54,9 @@ public class PostEntity {
 
     @OneToMany(mappedBy = "post")
     private List<CommentEntity> comments;
+
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Column(name = "embedding", columnDefinition = "vector(1024)")
+    private float[] embedding;
 
 }

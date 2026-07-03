@@ -23,22 +23,14 @@ public class User {
     private String providerID; // Via Google
 
     public User() {}
-    public User(
-        UUID id,
-        String nickname,
-        String email,
-        String password,
-        OffsetDateTime createdAt,
-        AuthProvider provider,
-        UserStatus status
-    ) {
-        this.id = id;
-        SetNickname(nickname);
-        SetEmail(email);
-        SetPassword(password);
-        SetCreatedAt(createdAt);
-        SetProvider(provider);
-        SetStatus(status);
+    public User(Builder builder) {   
+        this.id = builder.id;
+        SetNickname(builder.nickname);
+        SetEmail(builder.email);
+        SetPassword(builder.password);
+        SetCreatedAt(builder.createdAt);
+        SetProvider(builder.provider);
+        SetStatus(builder.status);
     }
 
     public UUID GetID() { return id; }
@@ -83,5 +75,58 @@ public class User {
     }
 
     private void ValidateEmail(String email) { if (!(email.matches(EMAIL_REGEX))) throw new IllegalArgumentException("Formato de Email inválido"); }
+
+    public static class Builder {
+        private UUID id;
+        private String nickname;
+        private String email;
+        private String password;
+        private OffsetDateTime createdAt;
+        private AuthProvider provider;
+        private UserStatus status;
+
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder nickname(String nickname) {
+            this.nickname = nickname;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder provider(AuthProvider provider) {
+            this.provider = provider;
+            return this;
+        }
+
+        public Builder status(UserStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
 }

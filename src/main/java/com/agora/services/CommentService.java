@@ -1,8 +1,11 @@
 package com.agora.services;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -13,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.agora.dto.comment.CommentCreateDTO;
 import com.agora.dto.comment.CommentUpdateDTO;
 import com.agora.enums.SubmitStatus;
+import com.agora.enums.UserStatus;
 import com.agora.mappers.CommentMapper;
 import com.agora.models.Comment;
 import com.agora.models.User;
@@ -32,20 +36,22 @@ public class CommentService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
 
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         Comment parent = null;
         if (dto.parentID() != null) {
             parent = CommentMapper.ToDomain(commentRepository.findById(dto.parentID()).orElseThrow(() -> new RuntimeException("Parent comment not found")));
         }
 
-        Comment comment = new Comment(
-            null, // ID
-            postService.ReadByID(dto.postID()),
-            user,
-            OffsetDateTime.now(), 
-            dto.content(),
-            SubmitStatus.ACTIVE,
-            parent
-        );
+        Comment comment = Comment.builder()
+            .id(null)
+            .post(postService.ReadByID(dto.postID()))
+            .author(user)
+            .createdAt(OffsetDateTime.now())
+            .content(dto.content())
+            .status(SubmitStatus.ACTIVE)
+            .parent(parent)
+        .build();
 
         if (comment.GetPost().GetStatus() == SubmitStatus.DELETED) throw new ResponseStatusException(HttpStatus.CONFLICT, "Can't comment on a deleted post");
 
@@ -53,16 +59,28 @@ public class CommentService {
     }
 
     public List<Comment> ReadAllByPostID(UUID id) {
-        return commentRepository.findByPostID(id).stream().map(CommentMapper::ToDomain).toList();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
+        return BuildTree(commentRepository.findByPostID(id, user.GetID()).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public List<Comment> ReadAllByAuthorNickname(String nickname) {
-        return commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
+        return BuildTree(commentRepository.findAllByAuthorNickname(nickname).stream().map(CommentMapper::ToDomain).toList());
     }
 
     public void Update(UUID id, CommentUpdateDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
+
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
         
         Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
         if (comment.GetStatus() == SubmitStatus.DELETED) return;
@@ -79,6 +97,8 @@ public class CommentService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.ReadByEmail(auth.getName());
 
+        if (user.GetStatus() != UserStatus.ACTIVE) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sua conta está suspensa");
+
         Comment comment = CommentMapper.ToDomain(commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found")));
 
         if (!comment.GetAuthor().GetID().equals(user.GetID())) throw new RuntimeException("Unauthorized");
@@ -86,6 +106,29 @@ public class CommentService {
         comment.SetStatus(SubmitStatus.DELETED);
 
         commentRepository.save(CommentMapper.ToEntity(comment));
+    }
+
+    private List<Comment> BuildTree(List<Comment> comments) {
+        Map<UUID, Comment> map = comments.stream().collect(Collectors.toMap(Comment::GetID, c -> c));
+
+        comments.forEach(c -> c.GetReplies().clear());
+
+        List<Comment> roots = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            if (comment.GetParent() == null) {
+                roots.add(comment);
+            }
+            else {
+                Comment parent = map.get(comment.GetParent().GetID());
+
+                if (parent != null) {
+                    parent.AddReply(comment);
+                }
+            }
+        }
+
+        return roots;
     }
 
 }

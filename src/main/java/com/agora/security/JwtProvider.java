@@ -3,10 +3,12 @@ package com.agora.security;
 // import java.security.Key;
 // import java.security.PublicKey;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -18,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
     
     private static final String SECRET = "SuperSecretKeyForJwtGenerationSuperSecretKeyForJwtGeneration";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 Dia (Dev) // 1000 * 60 * 60; // 1 hora
 
     private SecretKey GetSignKey() {
         /*byte[] keyBytes = Decoders.BASE64.decode(SECRET);
@@ -27,9 +29,12 @@ public class JwtProvider {
     }
 
     public String GenerateToken(CustomUserDetails user) {
+        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
         return Jwts.builder()
             .subject(user.getId().toString())
             .claim("nickname", user.getNickname())
+            .claim("roles", roles)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(GetSignKey())

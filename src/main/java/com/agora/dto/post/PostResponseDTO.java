@@ -10,7 +10,7 @@ public record PostResponseDTO(
     UUID id,
     UserSummaryDTO author,
     String title,
-    String description,
+    String content,
     OffsetDateTime createdAt,
     SubmitStatus status
 ) {}

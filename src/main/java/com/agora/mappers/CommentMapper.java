@@ -12,15 +12,21 @@ public class CommentMapper {
     public static Comment ToDomain(CommentEntity entity) {
         if (entity == null) return null;
 
-        Comment comment = new Comment(
-            entity.getId(),
-            PostMapper.ToDomain(entity.getPost()),
-            UserMapper.ToDomain(entity.getAuthor()),
-            entity.getCreatedAt(),
-            entity.getContent(),
-            entity.getStatus(),
-            entity.getParent() != null ? ToDomain(entity.getParent()) : null
-        );
+        Comment parent = null;
+        if (entity.getParent() != null) {
+            parent = new Comment();
+            parent.SetID(entity.getParent().getId());
+        }
+
+        Comment comment = Comment.builder()
+            .id(entity.getId())
+            .post(PostMapper.ToDomain(entity.getPost()))
+            .author(UserMapper.ToDomain(entity.getAuthor()))
+            .createdAt(entity.getCreatedAt())
+            .content(entity.getContent())
+            .status(entity.getStatus())
+            .parent(parent)
+        .build();
 
         return comment;
     }
@@ -28,15 +34,20 @@ public class CommentMapper {
     // API -> DB
     public static CommentEntity ToEntity(Comment domain) {
         if (domain == null) return null;
-        
+
         CommentEntity entity = new CommentEntity();
+        if (domain.GetParent() != null) {
+            CommentEntity parent = new CommentEntity();
+            parent.setId(domain.GetParent().GetID());
+            entity.setParent(parent);
+        }
+        
         entity.setId(domain.GetID());
         entity.setPost(PostMapper.ToEntity(domain.GetPost()));
         entity.setAuthor(UserMapper.ToEntity(domain.GetAuthor()));
         entity.setCreatedAt(domain.GetCreatedAt());
         entity.setContent(domain.GetContent());
         entity.setStatus(domain.GetStatus());
-        entity.setParent(domain.GetParent() != null ? ToEntity(domain.GetParent()) : null);
 
         return entity;
     }
@@ -58,7 +69,8 @@ public class CommentMapper {
             domain.GetCreatedAt(),
             domain.GetContent(),
             domain.GetStatus(),
-            domain.GetParent() != null ? domain.GetParent().GetID() : null
+            // domain.GetParent() != null ? domain.GetParent().GetID() : null
+            domain.GetReplies().stream().map(CommentMapper::ToResponseDTO).toList()
         );
     }
 
